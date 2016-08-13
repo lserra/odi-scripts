@@ -1,0 +1,45 @@
+<comando no destino>
+OdiSendMail -MAILHOST=#V_MAIL_SERVER -FROM=#V_MAIL_FROM "-TO=#V_MAIL_TO" "-SUBJECT=Informe de Carga de Telefones" 
+ 
+ 
+Prezado(a) usuário(a),
+ 
+            A carga dos telefones Celulares do Altiris foi realizada com sucesso na base do Telecom.   
+ 
+            O processo  #STEP_NAME foi executada em #STEP_DUR segundos.
+ 
+            Total de registros carregados : #NB_INS
+ 
+            Total de registros atualizados : #NB_UPD
+ 
+           Total de Erros encontrados : #NB_ERR
+ 
+ Esta é uma mensagem automática, este e-mail não deve ser respondido.
+
+<comando na origem>
+SELECT STEP_NAME ,
+       STEP_DUR ,
+       NB_INS ,
+       NB_UPD ,
+       NB_DEL ,
+       NB_ERR 
+FROM ( SELECT
+             SSS.STEP_NAME ,
+             SSL.STEP_DUR ,
+             SSL.NB_INS ,
+             SSL.NB_UPD ,
+             SSL.NB_DEL ,
+             SSL.NB_ERR 
+       FROM
+             SNP_SESSION SS,
+             SNP_SESS_STEP SSS,
+             SNP_STEP_LOG SSL
+ 
+            WHERE (1=1)
+            AND SS.SESS_NO=SSS.SESS_NO
+            AND SSS.SESS_NO=SSL.SESS_NO
+            AND SSS.NNO=SSL.NNO
+            AND SSS.STEP_NAME='CARGA DIM TELEFONE'
+            ORDER BY SS.SESS_BEG DESC , SSS.NNO 
+		) 
+WHERE ROWNUM <= 1
